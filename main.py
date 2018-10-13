@@ -318,6 +318,7 @@ async def game(ctx, gamecode):
 ###################
 @bot.command()
 async def score(ctx, kills, placement, gamecode):
+    global GAME_MODE
     if GAME_MODE == 1:
         score = calculate_score(kills, placement)
 
@@ -332,13 +333,47 @@ async def score(ctx, kills, placement, gamecode):
             json.dump(content, solo_json, indent=4, sort_keys=True, separators=(',', ': '))
             solo_json.truncate()
 
+            await ctx.send(f"Score: {score}, added to player <@{ctx.author.id}> with Kills: {kills}, Placement: {placement} and GameNumber: {gamecode}")
+            logger.info(f"Score: {score}, added to player <@{ctx.author.id}> with Kills: {kills}, Placement: {placement} and GameNumber: {gamecode}")
+
+    if GAME_MODE == 2:
+        score = calculate_score(kills, placement)
+
+        with open('duo_leaderboard.json', 'r+') as duo_json:
+            content = json.load(duo_json)
+
+            for team in content['scores']:
+                if team['owner'] == ctx.author.id:
+                    team['score'] += score
+                    teamname = team['teamname']
+
+            duo_json.seek(0)
+            json.dump(content, duo_json, indent=4, sort_keys=True, separators=(',', ': '))
+            duo_json.truncate()
+
+            await ctx.send(f"Score: {score}, added to team ")
+
+    if GAME_MODE == 3:
+        score = calculate_score(kills, placement)
+
+        with open('squad_leaderboard.json', 'r+') as squad_json:
+            content = json.load(squad_json)
+
+            for team in content['scores']:
+                if team['owner'] == ctx.author.id:
+                    team['score'] += score
+
+            squad_json.seek(0)
+            json.dump(content, squad_json, indent=4, sort_keys=True, separators=(',', ': '))
+            squad_json.truncate()
+
 ##############################################
 # create team for either duo or squad
 # with a team name and the users in the team
 # users have to be entered with a ping
 ##############################################
 @bot.command()
-async def create(ctx, mode, teamname = discord.Member, *users):
+async def create(ctx, mode, teamname = None, *users):
     if mode == "solo":
         with open('solo_leaderboard.json', 'r+') as solo_json:
             soloData = json.load(solo_json)
@@ -362,6 +397,11 @@ async def create(ctx, mode, teamname = discord.Member, *users):
     # CREATE DUO TEAM
     #####################
     if mode == "duo":
+        if len(users) > 1:
+            await ctx.send(f"Too many users, <@{ctx.author.id}>")
+            logger.error(f"Too many users on duo team create attempt - {ctx.author.id}")
+            return
+
         with open('duo_leaderboard.json', 'r+') as duo_json:
             duoData = json.load(duo_json)
             userList = []
@@ -369,9 +409,12 @@ async def create(ctx, mode, teamname = discord.Member, *users):
                 toArray = re.sub("[^0-9]", "", user)
                 userList.append(toArray)
 
+            userList.append(ctx.author.id)
+
             dataDict = {
                 'owner': ctx.author.id,
-                teamname: userList,
+                'teamname': teamname,
+                'members': userList,
                 "score": 0
             }
             duoData['scores'].append(dataDict)
@@ -387,6 +430,11 @@ async def create(ctx, mode, teamname = discord.Member, *users):
     # CREATE SQUAD TEAM
     #####################
     if mode == "squad":
+        if len(users) > 3:
+            await ctx.send(f"Too many users, <@{ctx.author.id}>")
+            logger.error(f"Too many users on squad team create attempt - {ctx.author.id}")
+            return
+
         with open('squad_leaderboard.json', 'r+') as squad_json:
             squadData = json.load(squad_json)
             userList = []
@@ -394,9 +442,12 @@ async def create(ctx, mode, teamname = discord.Member, *users):
                 toArray = re.sub("[^0-9]", "", user)
                 userList.append(toArray)
 
+            userList.append(ctx.author.id)
+
             dataDict = {
                 'owner': ctx.author.id,
-                teamname: userList,
+                'teamname': teamname,
+                'members': userList,
                 "score": 0
             }
             squadData['scores'].append(dataDict)
