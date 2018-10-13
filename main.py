@@ -318,7 +318,19 @@ async def game(ctx, gamecode):
 ###################
 @bot.command()
 async def score(ctx, kills, placement, gamecode):
-    pass
+    if GAME_MODE == 1:
+        score = calculate_score(kills, placement)
+
+        with open('solo_leaderboard.json', 'r+') as solo_json:
+            content = json.load(solo_json)
+
+            for team in content['scores']:
+                if team['user'] == ctx.author.id:
+                    team['score'] += score
+
+            solo_json.seek(0)
+            json.dump(content, solo_json, indent=4, sort_keys=True, separators=(',', ': '))
+            solo_json.truncate()
 
 ##############################################
 # create team for either duo or squad
@@ -326,25 +338,47 @@ async def score(ctx, kills, placement, gamecode):
 # users have to be entered with a ping
 ##############################################
 @bot.command()
-async def create(ctx, mode, teamname, *users):
+async def create(ctx, mode, teamname = discord.Member, *users):
+    if mode == "solo":
+        with open('solo_leaderboard.json', 'r+') as solo_json:
+            soloData = json.load(solo_json)
+            user = ctx.author.id
+
+            dataDict = {
+                'user': user,
+                'score': 0
+            }
+
+            soloData['scores'].append(dataDict)
+
+            solo_json.seek(0)
+            json.dump(soloData, solo_json, indent=4, sort_keys=True, separators=(',', ': '))
+            solo_json.truncate()
+
+            await ctx.send(f"Successfully created solo team as <@{user}>")
+            logger.info(f"Created solo team as - {user}")
+
     #####################
     # CREATE DUO TEAM
     #####################
     if mode == "duo":
-        with open('duo_leaderboard.json', 'r') as duo_json:
+        with open('duo_leaderboard.json', 'r+') as duo_json:
             duoData = json.load(duo_json)
-        with open('duo_leaderboard.json', 'w') as duo_json:
             userList = []
             for user in users:
                 toArray = re.sub("[^0-9]", "", user)
                 userList.append(toArray)
 
             dataDict = {
+                'owner': ctx.author.id,
                 teamname: userList,
                 "score": 0
             }
             duoData['scores'].append(dataDict)
+
+            duo_json.seek(0)
             json.dump(duoData, duo_json, indent=4, sort_keys=True, separators=(',', ': '))
+            duo_json.truncate()
 
             await ctx.send(f"Successfully created duo team with team name `{teamname}` and users {users}")
             logger.info(f"Created duo team - {teamname}, with users - {userList}")
@@ -353,20 +387,23 @@ async def create(ctx, mode, teamname, *users):
     # CREATE SQUAD TEAM
     #####################
     if mode == "squad":
-        with open('squad_leaderboard.json', 'r') as squad_json:
+        with open('squad_leaderboard.json', 'r+') as squad_json:
             squadData = json.load(squad_json)
-        with open('squad_leaderboard.json', 'w') as squad_json:
             userList = []
             for user in users:
                 toArray = re.sub("[^0-9]", "", user)
                 userList.append(toArray)
 
             dataDict = {
+                'owner': ctx.author.id,
                 teamname: userList,
                 "score": 0
             }
             squadData['scores'].append(dataDict)
+
+            squad_json.seek(0)
             json.dump(squadData, squad_json, indent=4, sort_keys=True, separators=(',', ': '))
+            squad_json.truncate()
 
             await ctx.send(f"Successfully created squad team with team name `{teamname}` and users {users}")
             logger.info(f"Created squad team - {teamname}, with users - {userList}")
