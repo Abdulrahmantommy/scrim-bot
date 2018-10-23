@@ -318,6 +318,12 @@ async def game(ctx, gamecode):
 ###################
 @bot.command()
 async def score(ctx, kills, placement, gamecode):
+    if ctx.message.attachments == []:
+        await ctx.send("Please attach a screenshot of your game for verification")
+        logger.error(f"Missing game screenshot from {ctx.author.id}")
+
+        return
+
     global GAME_MODE
     if GAME_MODE == 1:
         score = calculate_score(kills, placement)
