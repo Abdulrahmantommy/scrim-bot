@@ -21,7 +21,6 @@ def setup_logger(logger):
 	fh = logging.FileHandler('logs.log')
 	fh.setLevel(logging.DEBUG)
 	fh.setFormatter(formatter)
-
 	sh = logging.StreamHandler()
 	sh.setLevel(logging.INFO)
 	sh.setFormatter(formatter)
@@ -49,7 +48,6 @@ def setup_logger(logger):
 	sh.emit = decorate_emit(sh.emit)
 	logger.addHandler(fh)
 	logger.addHandler(sh)
-
 
 logger = logging.getLogger('main')
 setup_logger(logger)
@@ -114,7 +112,6 @@ def calculate_score(kills, placement):
 	logger.info(f"Score calculation = {score}")
 
 	return score
-
 ################################################################################
 
 
@@ -521,7 +518,6 @@ async def start(ctx):
 		logger.error(f"Bot tried to join the channel but it doesnt exist")
 
 	voice.play(discord.FFmpegPCMAudio('./game_starting.mp3'))
-
 	logger.info(f"Game started in gamemode {GAME_MODE}")
 
 
@@ -555,7 +551,6 @@ async def clear(ctx):
 	SQUAD_USER_LIST = []
 
 	GAME_CODE_EMBED.clear_fields()
-
 	logger.info("Cleared all user lists")
 
 ########################
@@ -611,7 +606,6 @@ async def on_command_error(ctx, error):
 		return
 	else:
 		logger.error(error)
-
 ################################################################################
 
 #####################
