@@ -195,155 +195,152 @@ async def mode(ctx, gameMode):
 		logger.info("Cleared all user lists")
 
 
-##############################################
-# let user enter into the game using gamecode.
-# enters them into the gamemode that has been -
-# selected by mods
-##############################################
 @bot.command()
 async def game(ctx, gamecode):
+	"""
+	Enter user into game code list of the specified game mode.
+
+	For a unique code it creates a new entry in the list with that user,
+	and adds a new field to the game code list embed.
+	When entering with a non-unique code,
+	it adds the user to the list of users with that game code,
+	and updates the game code embed field to add the new user.
+	"""
 	global GAME_CODE_EMBED
 	GAME_CODE_EMBED.timestamp = datetime.datetime.utcnow()
 	###############
 	# IF SOLO MODE
 	###############
 	if GAME_MODE == 1:
-		if ctx.author.id not in SOLO_USER_LIST:
-			SOLO_USER_LIST.append(ctx.author.id)
-			if gamecode not in SOLO_GAME_CODES_LIST:
-				SOLO_GAME_CODES_LIST.append(gamecode)
-				SOLO_GAME_CODES.append({
-					'gamecode': gamecode,
-					'users': [ctx.author.id]
-				})
-
-				GAME_CODE_EMBED.add_field(name=f"**1 user in game code {gamecode.upper()}**", value=f"<@{ctx.author.id}>", inline=False)
-
-				logger.info(f'{ctx.author.name}#{ctx.author.discriminator} added new gamecode - {gamecode}')
-				await ctx.send(f"Added <@{ctx.author.id}> with game code - `{gamecode}`")
-			else:
-				for items in SOLO_GAME_CODES:
-					if items['gamecode'] == gamecode:
-						if id not in items['users']:
-							items['users'].append(ctx.author.id)
-
-							list = ""
-							for e in items['users']:
-								list += f"<@{e}>\n"
-
-							for i in SOLO_GAME_CODES_LIST:
-								index = SOLO_GAME_CODES_LIST.index(gamecode)
-
-							GAME_CODE_EMBED.set_field_at(index, name=f"**{len(items['users'])} users in game code {gamecode.upper()}**", value=list)
-
-							logger.info(f'Added {ctx.author.name}#{ctx.author.discriminator} to {gamecode} gamecode')
-							await ctx.send(f"Added <@{ctx.author.id}> with game code - `{gamecode}`")
-						else:
-							logger.error(f'User tried to enter with identical gamecode - {ctx.author.name}#{ctx.author.discriminator}')
-							await ctx.send(f"<@{ctx.author.id}>, You have already entered with this gamecode")
-
-		else:
+		if ctx.author.id in SOLO_USER_LIST:
 			logger.error(f'User tried to enter game when already entered - {ctx.author.name}#{ctx.author.discriminator}')
 			await ctx.send(f'<@{ctx.author.id}>, You have already entered a game')
+			return
 
-		print(SOLO_GAME_CODES_LIST)
-		print(SOLO_GAME_CODES)
+		SOLO_USER_LIST.append(ctx.author.id)
+		if gamecode not in SOLO_GAME_CODES_LIST:
+			SOLO_GAME_CODES_LIST.append(gamecode)
+			SOLO_GAME_CODES.append({
+				'gamecode': gamecode,
+				'users': [ctx.author.id]
+			})
+
+			GAME_CODE_EMBED.add_field(name=f"**1 user in game code {gamecode.upper()}**", value=f"<@{ctx.author.id}>", inline=False)
+
+			logger.info(f'{ctx.author.name}#{ctx.author.discriminator} added new gamecode - {gamecode}')
+			await ctx.send(f"Added <@{ctx.author.id}> with game code - `{gamecode}`")
+		else:
+			for items in SOLO_GAME_CODES:
+				if items['gamecode'] == gamecode:
+					if id not in items['users']:
+						items['users'].append(ctx.author.id)
+
+						list = ""
+						for e in items['users']:
+							list += f"<@{e}>\n"
+
+						for i in SOLO_GAME_CODES_LIST:
+							index = SOLO_GAME_CODES_LIST.index(gamecode)
+
+						GAME_CODE_EMBED.set_field_at(index, name=f"**{len(items['users'])} users in game code {gamecode.upper()}**", value=list)
+
+						logger.info(f'Added {ctx.author.name}#{ctx.author.discriminator} to {gamecode} gamecode')
+						await ctx.send(f"Added <@{ctx.author.id}> with game code - `{gamecode}`")
+					else:
+						logger.error(f'User tried to enter with identical gamecode - {ctx.author.name}#{ctx.author.discriminator}')
+						await ctx.send(f"<@{ctx.author.id}>, You have already entered with this gamecode")
 
 	##############
 	# IF DUO MODE
 	##############
 	if GAME_MODE == 2:
-		if ctx.author.id not in DUO_USER_LIST:
-			DUO_USER_LIST.append(ctx.author.id)
-			if gamecode not in DUO_GAME_CODES_LIST:
-				DUO_GAME_CODES_LIST.append(gamecode)
-				DUO_GAME_CODES.append({
-					'gamecode': gamecode,
-					'users': [ctx.author.id]
-				})
-
-				GAME_CODE_EMBED.add_field(name=f"**1 user in game code {gamecode.upper()}**", value=f"<@{ctx.author.id}>", inline=False)
-
-				logger.info(f'{ctx.author.name}#{ctx.author.discriminator} added new gamecode - {gamecode}')
-				await ctx.send(f"Added <@{ctx.author.id}> with game code - `{gamecode}`")
-			else:
-				for items in DUO_GAME_CODES:
-					if items['gamecode'] == gamecode:
-						if id not in items['users']:
-							items['users'].append(ctx.author.id)
-
-							list = ""
-							for e in items['users']:
-								list += f"<@{e}>\n"
-
-							for i in DUO_GAME_CODES_LIST:
-								index = DUO_GAME_CODES_LIST.index(gamecode)
-
-							GAME_CODE_EMBED.set_field_at(index, name=f"**{len(items['users'])} users in game code {gamecode.upper()}**", value=list)
-
-							logger.info(f'Added {ctx.author.name}#{ctx.author.discriminator} to {gamecode} gamecode')
-							await ctx.send(f"Added <@{ctx.author.id}> with game code - `{gamecode}`")
-						else:
-							logger.error(f'User tried to enter with identical gamecode - {ctx.author.name}#{ctx.author.discriminator}')
-							await ctx.send(f"<@{ctx.author.id}>, You have already entered with this gamecode")
-
-		else:
+		if ctx.author.id in DUO_USER_LIST:
 			logger.error(f'User tried to enter game when already entered - {ctx.author.name}#{ctx.author.discriminator}')
 			await ctx.send(f'<@{ctx.author.id}>, You have already entered a game')
+			return
 
-		print(DUO_GAME_CODES_LIST)
-		print(DUO_GAME_CODES)
+		DUO_USER_LIST.append(ctx.author.id)
+		if gamecode not in DUO_GAME_CODES_LIST:
+			DUO_GAME_CODES_LIST.append(gamecode)
+			DUO_GAME_CODES.append({
+				'gamecode': gamecode,
+				'users': [ctx.author.id]
+			})
+
+			GAME_CODE_EMBED.add_field(name=f"**1 user in game code {gamecode.upper()}**", value=f"<@{ctx.author.id}>", inline=False)
+
+			logger.info(f'{ctx.author.name}#{ctx.author.discriminator} added new gamecode - {gamecode}')
+			await ctx.send(f"Added <@{ctx.author.id}> with game code - `{gamecode}`")
+		else:
+			for items in DUO_GAME_CODES:
+				if items['gamecode'] == gamecode:
+					if id not in items['users']:
+						items['users'].append(ctx.author.id)
+
+						list = ""
+						for e in items['users']:
+							list += f"<@{e}>\n"
+
+						for i in DUO_GAME_CODES_LIST:
+							index = DUO_GAME_CODES_LIST.index(gamecode)
+
+						GAME_CODE_EMBED.set_field_at(index, name=f"**{len(items['users'])} users in game code {gamecode.upper()}**", value=list)
+
+						logger.info(f'Added {ctx.author.name}#{ctx.author.discriminator} to {gamecode} gamecode')
+						await ctx.send(f"Added <@{ctx.author.id}> with game code - `{gamecode}`")
+					else:
+						logger.error(f'User tried to enter with identical gamecode - {ctx.author.name}#{ctx.author.discriminator}')
+						await ctx.send(f"<@{ctx.author.id}>, You have already entered with this gamecode")
 
 	################
 	# IF SQUAD MODE
 	################
 	if GAME_MODE == 3:
-		if ctx.author.id not in SQUAD_USER_LIST:
-			SQUAD_USER_LIST.append(ctx.author.id)
-			if gamecode not in SQUAD_GAME_CODES_LIST:
-				SQUAD_GAME_CODES_LIST.append(gamecode)
-				SQUAD_GAME_CODES.append({
-					'gamecode': gamecode,
-					'users': [ctx.author.id]
-				})
-
-				GAME_CODE_EMBED.add_field(name=f"**1 user in game code {gamecode.upper()}**", value=f"<@{ctx.author.id}>", inline=False)
-
-				logger.info(f'{ctx.author.name}#{ctx.author.discriminator} added new gamecode - {gamecode}')
-				await ctx.send(f"Added <@{ctx.author.id}> with game code - `{gamecode}`")
-			else:
-				for items in SQUAD_GAME_CODES:
-					if items['gamecode'] == gamecode:
-						if id not in items['users']:
-							items['users'].append(ctx.author.id)
-
-							list = ""
-							for e in items['users']:
-								list += f"<@{e}>\n"
-
-							for i in SQUAD_GAME_CODES_LIST:
-								index = SQUAD_GAME_CODES_LIST.index(gamecode)
-
-							GAME_CODE_EMBED.set_field_at(index, name=f"**{len(items['users'])} users in game code {gamecode.upper()}**", value=list)
-
-							logger.info(f'Added {ctx.author.name}#{ctx.author.discriminator} to {gamecode} gamecode')
-							await ctx.send(f"Added <@{ctx.author.id}> with game code - `{gamecode}`")
-						else:
-							logger.error(f'User tried to enter with identical gamecode - {ctx.author.name}#{ctx.author.discriminator}')
-							await ctx.send(f"<@{ctx.author.id}>, You have already entered with this gamecode")
-
-		else:
+		if ctx.author.id in SQUAD_USER_LIST:
 			logger.error(f'User tried to enter game when already entered - {ctx.author.name}#{ctx.author.discriminator}')
 			await ctx.send(f'<@{ctx.author.id}>, You have already entered a game')
+			return
 
-		print(SQUAD_GAME_CODES_LIST)
-		print(SQUAD_GAME_CODES)
+		SQUAD_USER_LIST.append(ctx.author.id)
+		if gamecode not in SQUAD_GAME_CODES_LIST:
+			SQUAD_GAME_CODES_LIST.append(gamecode)
+			SQUAD_GAME_CODES.append({
+				'gamecode': gamecode,
+				'users': [ctx.author.id]
+			})
 
-###################
-# enter user score
-###################
+			GAME_CODE_EMBED.add_field(name=f"**1 user in game code {gamecode.upper()}**", value=f"<@{ctx.author.id}>", inline=False)
+
+			logger.info(f'{ctx.author.name}#{ctx.author.discriminator} added new gamecode - {gamecode}')
+			await ctx.send(f"Added <@{ctx.author.id}> with game code - `{gamecode}`")
+		else:
+			for items in SQUAD_GAME_CODES:
+				if items['gamecode'] == gamecode:
+					if id not in items['users']:
+						items['users'].append(ctx.author.id)
+
+						list = ""
+						for e in items['users']:
+							list += f"<@{e}>\n"
+
+						for i in SQUAD_GAME_CODES_LIST:
+							index = SQUAD_GAME_CODES_LIST.index(gamecode)
+
+						GAME_CODE_EMBED.set_field_at(index, name=f"**{len(items['users'])} users in game code {gamecode.upper()}**", value=list)
+
+						logger.info(f'Added {ctx.author.name}#{ctx.author.discriminator} to {gamecode} gamecode')
+						await ctx.send(f"Added <@{ctx.author.id}> with game code - `{gamecode}`")
+					else:
+						logger.error(f'User tried to enter with identical gamecode - {ctx.author.name}#{ctx.author.discriminator}')
+						await ctx.send(f"<@{ctx.author.id}>, You have already entered with this gamecode")
+
 @bot.command()
 async def score(ctx, kills, placement, gamecode):
+	"""
+	If a verification image is provided with the command,
+	calculate user's score from their inputted kills and placement,
+	and update the leaderboard file with the added score.
+	"""
 	if ctx.message.attachments == []:
 		await ctx.send("Please attach a screenshot of your game for verification")
 		logger.error(f"Missing game screenshot from {ctx.author.id}")
