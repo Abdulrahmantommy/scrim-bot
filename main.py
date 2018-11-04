@@ -2,9 +2,6 @@ import re
 import logging
 import datetime
 import json
-from pytz import timezone
-import pytz
-import itertools
 from auth import bot_token
 import discord
 from discord.ext import commands
@@ -79,7 +76,6 @@ THIRD_PLACE_POINTS = 1
 # 2 = duo
 # 3 = squad
 #############
-global GAME_MODE
 GAME_MODE = 1
 
 ##########################################
@@ -334,6 +330,7 @@ async def game(ctx, gamecode):
 						logger.error(f'User tried to enter with identical gamecode - {ctx.author.name}#{ctx.author.discriminator}')
 						await ctx.send(f"<@{ctx.author.id}>, You have already entered with this gamecode")
 
+
 @bot.command()
 async def score(ctx, kills, placement, gamecode):
 	"""
@@ -344,7 +341,6 @@ async def score(ctx, kills, placement, gamecode):
 	if ctx.message.attachments == []:
 		await ctx.send("Please attach a screenshot of your game for verification")
 		logger.error(f"Missing game screenshot from {ctx.author.id}")
-
 		return
 
 	global GAME_MODE
@@ -397,9 +393,10 @@ async def score(ctx, kills, placement, gamecode):
 			squad_json.truncate()
 
 ##############################################
-# create team for either duo or squad
+# create team for either soloe, duo or squad
 # with a team name and the users in the team
 # users have to be entered with a ping
+# if entering as a solo, no team name is added and no ping is required
 ##############################################
 @bot.command()
 async def create(ctx, mode, teamname = None, *users):
@@ -436,7 +433,7 @@ async def create(ctx, mode, teamname = None, *users):
 			userList = []
 			for user in users:
 				toArray = re.sub("[^0-9]", "", user)
-				userList.append(toArray)
+				userList.append(int(toArray))
 
 			userList.append(ctx.author.id)
 
@@ -469,7 +466,7 @@ async def create(ctx, mode, teamname = None, *users):
 			userList = []
 			for user in users:
 				toArray = re.sub("[^0-9]", "", user)
-				userList.append(toArray)
+				userList.append(int(toArray))
 
 			userList.append(ctx.author.id)
 
