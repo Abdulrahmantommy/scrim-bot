@@ -82,7 +82,7 @@ GAME_MODE = 1
 # embed initialisation for game code list
 ##########################################
 GAME_CODE_EMBED = discord.Embed(color=0x0EBFE9, timestamp=datetime.datetime.utcnow())
-GAME_CODE_EMBED.set_author(name="Aran's Bot", icon_url='https://avatars2.githubusercontent.com/u/8254643?s=460&v=4')
+GAME_CODE_EMBED.set_author(name="Big Brain Bot", icon_url='https://cdn.discordapp.com/avatars/508616362411819008/1a022b9101a4010ab9dfdc492fbc6e1d.png')
 GAME_CODE_EMBED.set_footer(text="Made by Adure#3333")
 
 
