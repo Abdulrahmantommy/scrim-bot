@@ -2,11 +2,16 @@ import re
 import logging
 import datetime
 import json
+from configparser import ConfigParser
 from auth import bot_token
 import discord
 from discord.ext import commands
 
-bot = commands.Bot(command_prefix='/')
+config = ConfigParser()
+config.read('config.ini')
+prefix = config.get('bot', 'CommandPrefix')
+
+bot = commands.Bot(command_prefix=prefix)
 
 ## logger shit ##
 ################################################################################
@@ -50,11 +55,11 @@ logger = logging.getLogger('main')
 setup_logger(logger)
 ################################################################################
 
-MOD_ROLE = 'Moderator'
+MOD_ROLE = config.get('discord', 'ModRole')
 
-SOLO_CHANNEL_ID = 496188599079796736
-DUO_CHANNEL_ID = 496188621309739009
-SQUAD_CHANNEL_ID = 496188647033536513
+SOLO_CHANNEL_ID = config.getint('discord', 'SoloChannelID')
+DUO_CHANNEL_ID = config.getint('discord', 'DuoChannelID')
+SQUAD_CHANNEL_ID = config.getint('discord', 'SquadChannelID')
 
 SOLO_GAME_CODES_LIST = []
 SOLO_GAME_CODES = []
@@ -66,9 +71,9 @@ SQUAD_GAME_CODES_LIST = []
 SQUAD_GAME_CODES = []
 SQUAD_USER_LIST = []
 
-FIRST_PLACE_POINTS = 3
-SECOND_PLACE_POINTS = 2
-THIRD_PLACE_POINTS = 1
+FIRST_PLACE_POINTS = config.getint('bot', 'FirstPlacePoints')
+SECOND_PLACE_POINTS = config.getint('bot', 'SecondPlacePoints')
+THIRD_PLACE_POINTS = config.getint('bot', 'ThirdPlacePoints')
 
 ############
 # key:
