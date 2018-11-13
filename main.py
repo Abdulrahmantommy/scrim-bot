@@ -400,7 +400,7 @@ async def score(ctx, kills, placement, gamecode):
 			squad_json.truncate()
 
 ##############################################
-# create team for either soloe, duo or squad
+# create team for either solo, duo or squad
 # with a team name and the users in the team
 # users have to be entered with a ping
 # if entering as a solo, no team name is added and no ping is required
@@ -531,6 +531,7 @@ async def start(ctx):
 # clear the user lists
 #######################
 @bot.command()
+@commands.has_role(MOD_ROLE)
 async def clear(ctx):
 	global SOLO_GAME_CODES_LIST
 	global SOLO_GAME_CODES
