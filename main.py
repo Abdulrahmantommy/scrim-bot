@@ -358,6 +358,7 @@ async def score(ctx, kills, placement, gamecode):
 			for team in content['scores']:
 				if team['user'] == ctx.author.id:
 					team['score'] += score
+					team['kills'] += kills
 
 			solo_json.seek(0)
 			json.dump(content, solo_json, indent=4, sort_keys=True, separators=(',', ': '))
@@ -375,7 +376,7 @@ async def score(ctx, kills, placement, gamecode):
 			for team in content['scores']:
 				if team['owner'] == ctx.author.id:
 					team['score'] += score
-					teamname = team['teamname']
+					team['kills'] += kills
 
 			duo_json.seek(0)
 			json.dump(content, duo_json, indent=4, sort_keys=True, separators=(',', ': '))
@@ -392,6 +393,7 @@ async def score(ctx, kills, placement, gamecode):
 			for team in content['scores']:
 				if team['owner'] == ctx.author.id:
 					team['score'] += score
+					team['kills'] += kills
 
 			squad_json.seek(0)
 			json.dump(content, squad_json, indent=4, sort_keys=True, separators=(',', ': '))
@@ -412,7 +414,8 @@ async def create(ctx, mode, teamname = None, *users):
 
 			dataDict = {
 				'user': user,
-				'score': 0
+				'score': 0,
+				'kills': 0
 			}
 
 			soloData['scores'].append(dataDict)
@@ -446,7 +449,8 @@ async def create(ctx, mode, teamname = None, *users):
 				'owner': ctx.author.id,
 				'teamname': teamname,
 				'members': userList,
-				"score": 0
+				'score': 0,
+				'kills': 0
 			}
 			duoData['scores'].append(dataDict)
 
@@ -479,7 +483,8 @@ async def create(ctx, mode, teamname = None, *users):
 				'owner': ctx.author.id,
 				'teamname': teamname,
 				'members': userList,
-				"score": 0
+				'score': 0,
+				'kills': 0
 			}
 			squadData['scores'].append(dataDict)
 
