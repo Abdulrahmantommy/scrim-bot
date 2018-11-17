@@ -350,6 +350,12 @@ async def score(ctx, kills, placement, gamecode):
 
 	global GAME_MODE
 	if GAME_MODE == 1:
+		global SOLO_GAME_CODES_LIST
+		if gamecode not in SOLO_GAME_CODES_LIST:
+			await ctx.send(f'You cannot enter a score, you have not entered your game code')
+			logger.error(f'Scoring attempt with no associated game code existing - {ctx.author.id}')
+			return
+
 		score = calculate_score(kills, placement)
 
 		with open('solo_leaderboard.json', 'r+') as solo_json:
@@ -368,6 +374,12 @@ async def score(ctx, kills, placement, gamecode):
 			logger.info(f"Score: {score}, added to player <@{ctx.author.id}> with Kills: {kills}, Placement: {placement} and GameNumber: {gamecode}")
 
 	if GAME_MODE == 2:
+		global DUO_GAME_CODES_LIST
+		if gamecode not in DUO_GAME_CODES_LIST:
+			await ctx.send(f'You cannot enter a score, you have not entered your game code')
+			logger.error(f'Scoring attempt with no associated game code existing - {ctx.author.id}')
+			return
+
 		score = calculate_score(kills, placement)
 
 		with open('duo_leaderboard.json', 'r+') as duo_json:
@@ -385,6 +397,12 @@ async def score(ctx, kills, placement, gamecode):
 			await ctx.send(f"Score: {score}, added to team ")
 
 	if GAME_MODE == 3:
+		global SQUAD_GAME_CODES_LIST
+		if gamecode not in SQUAD_GAME_CODES_LIST:
+			await ctx.send(f'You cannot enter a score, you have not entered your game code')
+			logger.error(f'Scoring attempt with no associated game code existing - {ctx.author.id}')
+			return
+
 		score = calculate_score(kills, placement)
 
 		with open('squad_leaderboard.json', 'r+') as squad_json:
