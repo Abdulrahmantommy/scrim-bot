@@ -71,6 +71,8 @@ SQUAD_GAME_CODES_LIST = []
 SQUAD_GAME_CODES = []
 SQUAD_USER_LIST = []
 
+IS_OPEN = 0
+
 FIRST_PLACE_POINTS = config.getint('bot', 'FirstPlacePoints')
 SECOND_PLACE_POINTS = config.getint('bot', 'SecondPlacePoints')
 THIRD_PLACE_POINTS = config.getint('bot', 'ThirdPlacePoints')
@@ -124,6 +126,9 @@ def calculate_score(kills, placement):
 @bot.command()
 @commands.has_role(MOD_ROLE)
 async def mode(ctx, gameMode):
+	"""
+	change current scrim game mode
+	"""
 	global GAME_MODE
 	global SOLO_GAME_CODES_LIST
 	global SOLO_GAME_CODES
@@ -207,6 +212,12 @@ async def game(ctx, gamecode):
 	it adds the user to the list of users with that game code,
 	and updates the game code embed field to add the new user.
 	"""
+	global IS_OPEN
+	if IS_OPEN == 0:
+		await ctx.send(f'Scrims are closed at the moment, check back later')
+		logger.info(f'game code entering attempt while scrims are closed - {ctx.author.id}')
+		return
+
 	global GAME_CODE_EMBED
 	GAME_CODE_EMBED.timestamp = datetime.datetime.utcnow()
 	###############
@@ -343,6 +354,12 @@ async def score(ctx, kills, placement, gamecode):
 	calculate user's score from their inputted kills and placement,
 	and update the leaderboard file with the added score.
 	"""
+	global IS_OPEN
+	if IS_OPEN == 0:
+		await ctx.send(f'Scrims are closed at the moment, check back later')
+		logger.info(f'score entering attempt while scrims are closed - {ctx.author.id}')
+		return
+
 	if ctx.message.attachments == []:
 		await ctx.send("Please attach a screenshot of your game for verification")
 		logger.error(f"Missing game screenshot from {ctx.author.id}")
@@ -516,12 +533,46 @@ async def create(ctx, mode, teamname = None, *users):
 			await ctx.send(f"Successfully created squad team with team name `{teamname}` and users {users}")
 			logger.info(f"Created squad team - {teamname}, with users - {userList}")
 
+#####################
+# open game entering
+####################
+@bot.command()
+@commands.has_role(MOD_ROLE)
+async def open(ctx):
+	"""
+	opens the scrims
+	"""
+	global IS_OPEN
+	IS_OPEN = 1
+	await ctx.send(f'Scrims opened!')
+	logger.info(f'Scrims opened by - {ctx.author.id}')
+
+#####################
+# close game entering
+#####################
+@bot.command()
+@commands.has_role(MOD_ROLE)
+async def close(ctx):
+	"""
+	closes the scrims
+	"""
+	global IS_OPEN
+	IS_OPEN = 0
+	await ctx.send(f'Scrims closed!')
+	logger.info(f'Scrims closed by - {ctx.author.id}')
+
 #################
 # start the game
 #################
 @bot.command()
 @commands.has_role(MOD_ROLE)
 async def start(ctx):
+	"""
+
+	"""
+	global IS_OPEN
+	IS_OPEN = 1
+
 	if not discord.opus.is_loaded():
 		discord.opus.load_opus('opus')
 
@@ -554,6 +605,9 @@ async def start(ctx):
 @bot.command()
 @commands.has_role(MOD_ROLE)
 async def clear(ctx):
+	"""
+	clear all modes user and game code lists
+	"""
 	global SOLO_GAME_CODES_LIST
 	global SOLO_GAME_CODES
 	global SOLO_USER_LIST
