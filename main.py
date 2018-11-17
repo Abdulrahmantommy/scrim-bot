@@ -356,9 +356,9 @@ async def score(ctx, kills, placement, gamecode):
 			content = json.load(solo_json)
 
 			for team in content['scores']:
-				if team['user'] == ctx.author.id:
-					team['score'] += score
-					team['kills'] += kills
+				if team['userId'] == ctx.author.id:
+					team['score'] += float(score)
+					team['kills'] += int(kills)
 
 			solo_json.seek(0)
 			json.dump(content, solo_json, indent=4, sort_keys=True, separators=(',', ': '))
@@ -375,8 +375,8 @@ async def score(ctx, kills, placement, gamecode):
 
 			for team in content['scores']:
 				if team['owner'] == ctx.author.id:
-					team['score'] += score
-					team['kills'] += kills
+					team['score'] += float(score)
+					team['kills'] += int(kills)
 
 			duo_json.seek(0)
 			json.dump(content, duo_json, indent=4, sort_keys=True, separators=(',', ': '))
@@ -392,28 +392,31 @@ async def score(ctx, kills, placement, gamecode):
 
 			for team in content['scores']:
 				if team['owner'] == ctx.author.id:
-					team['score'] += score
-					team['kills'] += kills
+					team['score'] += float(score)
+					team['kills'] += int(kills)
 
 			squad_json.seek(0)
 			json.dump(content, squad_json, indent=4, sort_keys=True, separators=(',', ': '))
 			squad_json.truncate()
 
-##############################################
-# create team for either solo, duo or squad
-# with a team name and the users in the team
-# users have to be entered with a ping
-# if entering as a solo, no team name is added and no ping is required
-##############################################
+
 @bot.command()
 async def create(ctx, mode, teamname = None, *users):
+	"""
+	create team for either solo, duo or squad
+	with a team name and the users in the team
+	users have to be entered with a ping
+	if entering as a solo, no team name is added and no ping is required
+	"""
 	if mode == "solo":
 		with open('solo_leaderboard.json', 'r+') as solo_json:
 			soloData = json.load(solo_json)
-			user = ctx.author.id
+			userId = ctx.author.id
+			userName = f'{ctx.author.name}#{ctx.author.discriminator}'
 
 			dataDict = {
-				'user': user,
+				'userId': userId,
+				'userName': userName,
 				'score': 0,
 				'kills': 0
 			}
@@ -424,8 +427,8 @@ async def create(ctx, mode, teamname = None, *users):
 			json.dump(soloData, solo_json, indent=4, sort_keys=True, separators=(',', ': '))
 			solo_json.truncate()
 
-			await ctx.send(f"Successfully created solo team as <@{user}>")
-			logger.info(f"Created solo team as - {user}")
+			await ctx.send(f"Successfully created solo team as <@{userId}>")
+			logger.info(f"Created solo team as - {userName}")
 
 	#####################
 	# CREATE DUO TEAM
