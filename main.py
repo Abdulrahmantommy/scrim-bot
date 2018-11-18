@@ -568,7 +568,7 @@ async def close(ctx):
 @commands.has_role(MOD_ROLE)
 async def start(ctx):
 	"""
-
+	open scrims; join voice channel and play game starting mp3 
 	"""
 	global IS_OPEN
 	IS_OPEN = 1
