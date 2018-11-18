@@ -568,7 +568,7 @@ async def close(ctx):
 @commands.has_role(MOD_ROLE)
 async def start(ctx):
 	"""
-	open scrims; join voice channel and play game starting mp3 
+	open scrims; join voice channel and play game starting mp3
 	"""
 	global IS_OPEN
 	IS_OPEN = 1
@@ -638,6 +638,9 @@ async def clear(ctx):
 ########################
 @bot.command()
 async def users(ctx):
+	"""
+	display user and game code list
+	"""
 	await ctx.send(embed=GAME_CODE_EMBED)
 
 
