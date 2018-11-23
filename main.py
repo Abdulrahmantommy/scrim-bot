@@ -536,9 +536,9 @@ async def create(ctx, mode, teamname = None, *users):
 #####################
 # open game entering
 ####################
-@bot.command()
+@bot.command(name='open')
 @commands.has_role(MOD_ROLE)
-async def open(ctx):
+async def _open(ctx):
 	"""
 	opens the scrims
 	"""
