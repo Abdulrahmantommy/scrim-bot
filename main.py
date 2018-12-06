@@ -494,6 +494,12 @@ async def create(ctx, mode, teamname = None, *users):
 					logger.error(f'Duplicate duo team create attempt - {ctx.author.id}')
 					return
 
+			for team in duoData:
+				if team['teamname'] == teamname:
+					await ctx.send(f'That team name is already in use!')
+					logger.error(f'Duo team creation attempt with duplicate team name - {ctx.author.id}')
+					return
+
 			userList = []
 			for user in users:
 				toArray = re.sub("[^0-9]", "", user)
@@ -538,6 +544,12 @@ async def create(ctx, mode, teamname = None, *users):
 				if team['owner'] == ctx.author.id:
 					await ctx.send(f'You have already created a team, <@{ctx.author.id}>')
 					logger.error(f'Duplicate squad team create attempt - {ctx.author.id}')
+					return
+
+			for team in squadData:
+				if team['teamname'] == teamname:
+					await ctx.send(f'That team name is already in use!')
+					logger.error(f'Squad team creation attempt with duplicate team name - {ctx.author.id}')
 					return
 
 			userList = []
