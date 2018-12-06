@@ -473,6 +473,10 @@ async def create(ctx, mode, teamname = None, *users):
 			await ctx.send(f"Too many users, <@{ctx.author.id}>")
 			logger.error(f"Too many users on duo team create attempt - {ctx.author.id}")
 			return
+		elif len(users) < 1:
+			await ctx.send(f"Please ping your team mate when creating your team")
+			logger.error(f"No team mate supplied on duo team create attempt - {ctx.author.id}")
+			return
 
 		with open('duo_leaderboard.json', 'r+') as duo_json:
 			duoData = json.load(duo_json)
@@ -486,7 +490,8 @@ async def create(ctx, mode, teamname = None, *users):
 			dataDict = {
 				'owner': ctx.author.id,
 				'teamname': teamname,
-				'members': userList,
+				'memberIds': userList,
+				'memberNames': [],
 				'score': 0,
 				'kills': 0
 			}
@@ -507,6 +512,10 @@ async def create(ctx, mode, teamname = None, *users):
 			await ctx.send(f"Too many users, <@{ctx.author.id}>")
 			logger.error(f"Too many users on squad team create attempt - {ctx.author.id}")
 			return
+		elif len(users) < 3:
+			await ctx.send(f"Please ping all your team mates when creating your team")
+			logger.error(f"Not enough team mates supplied on squad team create attemt - {ctx.author.id}")
+			return
 
 		with open('squad_leaderboard.json', 'r+') as squad_json:
 			squadData = json.load(squad_json)
@@ -520,7 +529,8 @@ async def create(ctx, mode, teamname = None, *users):
 			dataDict = {
 				'owner': ctx.author.id,
 				'teamname': teamname,
-				'members': userList,
+				'memberIds': userList,
+				'memberNames': [],
 				'score': 0,
 				'kills': 0
 			}
