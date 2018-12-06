@@ -446,6 +446,13 @@ async def create(ctx, mode, teamname = None, *users):
 	if mode == "solo":
 		with open('solo_leaderboard.json', 'r+') as solo_json:
 			soloData = json.load(solo_json)
+
+			for team in soloData:
+				if team['userId'] == ctx.author.id:
+					await ctx.send(f'You have already created a team, <@{ctx.author.id}>')
+					logger.error(f'Duplicate solo team create attempt - {ctx.author.id}')
+					return
+
 			userId = ctx.author.id
 			userName = f'{ctx.author.name}#{ctx.author.discriminator}'
 
@@ -480,6 +487,13 @@ async def create(ctx, mode, teamname = None, *users):
 
 		with open('duo_leaderboard.json', 'r+') as duo_json:
 			duoData = json.load(duo_json)
+
+			for team in duoData:
+				if team['owner'] == ctx.author.id:
+					await ctx.send(f'You have already created a team, <@{ctx.author.id}>')
+					logger.error(f'Duplicate duo team create attempt - {ctx.author.id}')
+					return
+
 			userList = []
 			for user in users:
 				toArray = re.sub("[^0-9]", "", user)
@@ -519,6 +533,13 @@ async def create(ctx, mode, teamname = None, *users):
 
 		with open('squad_leaderboard.json', 'r+') as squad_json:
 			squadData = json.load(squad_json)
+
+			for team in squadData:
+				if team['owner'] == ctx.author.id:
+					await ctx.send(f'You have already created a team, <@{ctx.author.id}>')
+					logger.error(f'Duplicate squad team create attempt - {ctx.author.id}')
+					return
+
 			userList = []
 			for user in users:
 				toArray = re.sub("[^0-9]", "", user)
