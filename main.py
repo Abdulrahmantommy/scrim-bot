@@ -740,6 +740,8 @@ async def on_command_error(ctx, error):
 @bot.event
 async def on_ready():
 	logger.info(f'Logged in as {bot.user.name} - {bot.user.id}')
+	game = discord.Game(name='https://adure.me')
+	await bot.change_presence(activity=game)
 
 #########
 # run it
