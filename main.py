@@ -427,7 +427,7 @@ async def create(ctx, mode, teamname = None, *users):
 		with open('solo_leaderboard.json', 'r+') as solo_json:
 			soloData = json.load(solo_json)
 
-			for team in soloData:
+			for team in soloData['scores']:
 				if team['userId'] == ctx.author.id:
 					await ctx.send(f'You have already created a team, <@{ctx.author.id}>')
 					logger.error(f'Duplicate solo team create attempt - {ctx.author.id}')
@@ -468,30 +468,35 @@ async def create(ctx, mode, teamname = None, *users):
 		with open('duo_leaderboard.json', 'r+') as duo_json:
 			duoData = json.load(duo_json)
 
-			for team in duoData:
+			for team in duoData['scores']:
 				if team['owner'] == ctx.author.id:
 					await ctx.send(f'You have already created a team, <@{ctx.author.id}>')
 					logger.error(f'Duplicate duo team create attempt - {ctx.author.id}')
 					return
 
-			for team in duoData:
+			for team in duoData['scores']:
 				if team['teamname'] == teamname:
 					await ctx.send(f'That team name is already in use!')
 					logger.error(f'Duo team creation attempt with duplicate team name - {ctx.author.id}')
 					return
 
 			userList = []
+			userListNames = []
 			for user in users:
 				toArray = re.sub("[^0-9]", "", user)
 				userList.append(int(toArray))
-
 			userList.append(ctx.author.id)
+
+			for user in userList:
+				_user = await bot.get_user_info(user)
+				userName = f'{_user.name}#{_user.discriminator}'
+				userListNames.append(userName)
 
 			dataDict = {
 				'owner': ctx.author.id,
 				'teamname': teamname,
 				'memberIds': userList,
-				'memberNames': [],
+				'memberNames': userListNames,
 				'score': 0,
 				'kills': 0
 			}
@@ -520,30 +525,35 @@ async def create(ctx, mode, teamname = None, *users):
 		with open('squad_leaderboard.json', 'r+') as squad_json:
 			squadData = json.load(squad_json)
 
-			for team in squadData:
+			for team in squadData['scores']:
 				if team['owner'] == ctx.author.id:
 					await ctx.send(f'You have already created a team, <@{ctx.author.id}>')
 					logger.error(f'Duplicate squad team create attempt - {ctx.author.id}')
 					return
 
-			for team in squadData:
+			for team in squadData['scores']:
 				if team['teamname'] == teamname:
 					await ctx.send(f'That team name is already in use!')
 					logger.error(f'Squad team creation attempt with duplicate team name - {ctx.author.id}')
 					return
 
 			userList = []
+			userListNames = []
 			for user in users:
 				toArray = re.sub("[^0-9]", "", user)
 				userList.append(int(toArray))
-
 			userList.append(ctx.author.id)
+
+			for user in userList:
+				_user = bot.get_user_info(user)
+				userName = f'{_user.name}#{_user.discriminator}'
+				userListNames.append(userName)
 
 			dataDict = {
 				'owner': ctx.author.id,
 				'teamname': teamname,
 				'memberIds': userList,
-				'memberNames': [],
+				'memberNames': userListNames,
 				'score': 0,
 				'kills': 0
 			}
