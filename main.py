@@ -115,6 +115,32 @@ def calculate_score(kills, placement):
 	logger.info(f"Score calculation = {score}")
 
 	return score
+
+def clear_lists():
+	global SOLO_GAME_CODES_LIST
+	global SOLO_GAME_CODES
+	global SOLO_USER_LIST
+	global DUO_GAME_CODES_LIST
+	global DUO_GAME_CODES
+	global DUO_USER_LIST
+	global SQUAD_GAME_CODES_LIST
+	global SQUAD_GAME_CODES
+	global SQUAD_USER_LIST
+
+	global GAME_CODE_EMBED
+
+	SOLO_GAME_CODES_LIST = []
+	SOLO_GAME_CODES = []
+	SOLO_USER_LIST = []
+	DUO_GAME_CODES_LIST = []
+	DUO_GAME_CODES = []
+	DUO_USER_LIST = []
+	SQUAD_GAME_CODES_LIST = []
+	SQUAD_GAME_CODES = []
+	SQUAD_USER_LIST = []
+
+	GAME_CODE_EMBED.clear_fields()
+	logger.info("Cleared all user lists")
 ################################################################################
 
 
@@ -130,17 +156,7 @@ async def mode(ctx, gameMode):
 	change current scrim game mode
 	"""
 	global GAME_MODE
-	global SOLO_GAME_CODES_LIST
-	global SOLO_GAME_CODES
-	global SOLO_USER_LIST
-	global DUO_GAME_CODES_LIST
-	global DUO_GAME_CODES
-	global DUO_USER_LIST
-	global SQUAD_GAME_CODES_LIST
-	global SQUAD_GAME_CODES
-	global SQUAD_USER_LIST
 
-	global GAME_CODE_EMBED
 	gameMode = gameMode.lower()
 
 	if gameMode == "solo":
@@ -148,57 +164,21 @@ async def mode(ctx, gameMode):
 		logger.info(f'{ctx.author.name}#{ctx.author.discriminator} changed game mode to {GAME_MODE}')
 		await ctx.send("Successfully changed game mode to solo")
 
-		SOLO_GAME_CODES_LIST = []
-		SOLO_GAME_CODES = []
-		SOLO_USER_LIST = []
-		DUO_GAME_CODES_LIST = []
-		DUO_GAME_CODES = []
-		DUO_USER_LIST = []
-		SQUAD_GAME_CODES_LIST = []
-		SQUAD_GAME_CODES = []
-		SQUAD_USER_LIST = []
-
-		GAME_CODE_EMBED.clear_fields()
-
-		logger.info("Cleared all user lists")
+		clear_lists()
 
 	elif gameMode == "duo":
 		GAME_MODE = 2
 		logger.info(f'{ctx.author.name}#{ctx.author.discriminator} changed game mode to {GAME_MODE}')
 		await ctx.send("Successfully changed game mode to duo")
 
-		SOLO_GAME_CODES_LIST = []
-		SOLO_GAME_CODES = []
-		SOLO_USER_LIST = []
-		DUO_GAME_CODES_LIST = []
-		DUO_GAME_CODES = []
-		DUO_USER_LIST = []
-		SQUAD_GAME_CODES_LIST = []
-		SQUAD_GAME_CODES = []
-		SQUAD_USER_LIST = []
-
-		GAME_CODE_EMBED.clear_fields()
-
-		logger.info("Cleared all user lists")
+		clear_lists()
 
 	elif gameMode == "squad":
 		GAME_MODE = 3
 		logger.info(f'{ctx.author.name}#{ctx.author.discriminator} changed game mode to {GAME_MODE}')
 		await ctx.send("Successfully changed game mode to squad")
 
-		SOLO_GAME_CODES_LIST = []
-		SOLO_GAME_CODES = []
-		SOLO_USER_LIST = []
-		DUO_GAME_CODES_LIST = []
-		DUO_GAME_CODES = []
-		DUO_USER_LIST = []
-		SQUAD_GAME_CODES_LIST = []
-		SQUAD_GAME_CODES = []
-		SQUAD_USER_LIST = []
-
-		GAME_CODE_EMBED.clear_fields()
-
-		logger.info("Cleared all user lists")
+		clear_lists()
 
 
 @bot.command()
@@ -651,30 +631,7 @@ async def clear(ctx):
 	"""
 	clear all modes user and game code lists
 	"""
-	global SOLO_GAME_CODES_LIST
-	global SOLO_GAME_CODES
-	global SOLO_USER_LIST
-	global DUO_GAME_CODES_LIST
-	global DUO_GAME_CODES
-	global DUO_USER_LIST
-	global SQUAD_GAME_CODES_LIST
-	global SQUAD_GAME_CODES
-	global SQUAD_USER_LIST
-
-	global GAME_CODE_EMBED
-
-	SOLO_GAME_CODES_LIST = []
-	SOLO_GAME_CODES = []
-	SOLO_USER_LIST = []
-	DUO_GAME_CODES_LIST = []
-	DUO_GAME_CODES = []
-	DUO_USER_LIST = []
-	SQUAD_GAME_CODES_LIST = []
-	SQUAD_GAME_CODES = []
-	SQUAD_USER_LIST = []
-
-	GAME_CODE_EMBED.clear_fields()
-	logger.info("Cleared all user lists")
+	clear_lists()
 
 ########################
 # shows user list embed
