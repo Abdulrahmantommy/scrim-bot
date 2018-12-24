@@ -545,7 +545,7 @@ async def create(ctx, mode, teamname = None, *users):
 			userList.append(ctx.author.id)
 
 			for user in userList:
-				_user = bot.get_user_info(user)
+				_user = await bot.get_user_info(user)
 				userName = f'{_user.name}#{_user.discriminator}'
 				userListNames.append(userName)
 
