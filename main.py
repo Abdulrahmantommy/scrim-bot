@@ -423,11 +423,11 @@ async def team(ctx, mode, teamname = None, *users):
 
 @team.command(name="create")
 async def team_create(ctx, mode, teamname = None, *users):
-	"""
-	create team for either solo, duo or squad
-	with a team name and the users in the team
-	users have to be entered with a ping
-	if entering as a solo, no team name is added and no ping is required
+	"""- Create a team.
+	Add either 'solo', 'duo', or 'squad', after 'create' to select which mode to create the team for.
+	If entering as a solo no team name is required.
+	For duo and squad, add your team name like this: "cool team",
+	and ping your team mates to add them to the team.
 	"""
 	if mode == "solo":
 		with open('solo_leaderboard.json', 'r+') as solo_json:
