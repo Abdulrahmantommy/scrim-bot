@@ -335,6 +335,7 @@ async def score(ctx, kills, placement, gamecode):
 	calculate user's score from their inputted kills and placement,
 	and update the leaderboard file with the added score.
 	"""
+	gamecode = gamecode.lower()
 	global IS_OPEN
 	if IS_OPEN == 0:
 		await ctx.send(f'Scrims are closed at the moment, check back later')
