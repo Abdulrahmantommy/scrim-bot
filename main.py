@@ -6,6 +6,7 @@ from configparser import ConfigParser
 from auth import bot_token
 import discord
 from discord.ext import commands
+from discord.ext.commands import group
 
 config = ConfigParser()
 config.read('config.ini')
@@ -416,9 +417,12 @@ async def score(ctx, kills, placement, gamecode):
 			json.dump(content, squad_json, indent=4, sort_keys=True, separators=(',', ': '))
 			squad_json.truncate()
 
+@bot.group(invoke_without_command=True)
+async def team(ctx, mode, teamname = None, *users):
+	pass
 
-@bot.command()
-async def create(ctx, mode, teamname = None, *users):
+@team.command(name="create")
+async def team_create(ctx, mode, teamname = None, *users):
 	"""
 	create team for either solo, duo or squad
 	with a team name and the users in the team
@@ -683,7 +687,7 @@ async def score_error(ctx, error):
 ###################################
 # error handler for create command
 ###################################
-@create.error
+@team.error
 async def create_error(ctx, error):
 	if isinstance(error, commands.MissingRequiredArgument):
 		logger.error(f'Team creation command missing parameters - {ctx.author.name}#{ctx.author.discriminator}')
