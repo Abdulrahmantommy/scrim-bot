@@ -15,8 +15,8 @@ bot = commands.Bot(command_prefix=prefix)
 
 ## logger shit ##
 ################################################################################
-formatter = logging.Formatter('[%(asctime)s] [%(levelname)s]: %(message)s',
-							'%Y-%m-%d %H:%M:%S')
+formatter = logging.Formatter('[%(asctime)s] [%(levelname)s]: %(message)s', '%Y-%m-%d %H:%M:%S')
+
 def setup_logger(logger):
 	logger.setLevel(logging.DEBUG)
 
@@ -192,6 +192,7 @@ async def game(ctx, gamecode):
 	it adds the user to the list of users with that game code,
 	and updates the game code embed field to add the new user.
 	"""
+	gamecode = gamecode.lower()
 	global IS_OPEN
 	if IS_OPEN == 0:
 		await ctx.send(f'Scrims are closed at the moment, check back later')
