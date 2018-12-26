@@ -445,6 +445,20 @@ async def team_invite(ctx, *users):
 	"""
 	pass
 
+@team.command(name="accept")
+async def team_accept(ctx):
+	""" - Accept a team invitation. Use '/help team accept' for more info.
+	Coming soon :)
+	"""
+	pass
+
+@team.command(name="decline")
+async def team_decline(ctx):
+	""" - Decline a team invitation. Use '/team help decline' for more info.
+	Coming soon :)
+	"""
+	pass
+
 @team.command(name="create")
 async def team_create(ctx, mode, teamname = None, *users):
 	"""- Create a team. Use '/help team create' for more info.
