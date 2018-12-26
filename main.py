@@ -680,6 +680,16 @@ async def score_error(ctx, error):
 	else:
 		logger.error(error)
 
+###################################
+# error handler for create command
+###################################
+@create.error
+async def create_error(ctx, error):
+	if isinstance(error, commands.MissingRequiredArgument):
+		logger.error(f'Team creation command missing parameters - {ctx.author.name}#{ctx.author.discriminator}')
+		await ctx.send("Team creation command missing parameters")
+	else:
+		logger.error(error)
 
 ###################################
 # error handler for mode command
