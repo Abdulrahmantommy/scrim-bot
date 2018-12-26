@@ -419,15 +419,38 @@ async def score(ctx, kills, placement, gamecode):
 
 @bot.group(invoke_without_command=True)
 async def team(ctx, mode, teamname = None, *users):
+	"""
+	Use '/help team' for info on how to use this command.
+	"""
+	pass
+
+@team.command(name="delete")
+async def team_delete(ctx):
+	""" - Delete your team. Use '/help team delete' for more info.
+	Coming soon :)
+	"""
+	pass
+
+@team.command(name="leave")
+async def team_leave(ctx):
+	""" - Leave your team. Use '/help team leave' for more info.
+	Coming soon :)
+	"""
+	pass
+
+@team.command(name="invite")
+async def team_invite(ctx, *users):
+	""" - Invite a user to your team. Use '/help team invite' for more info.
+	Coming soon :)
+	"""
 	pass
 
 @team.command(name="create")
 async def team_create(ctx, mode, teamname = None, *users):
-	"""- Create a team.
+	"""- Create a team. Use '/help team create' for more info.
 	Add either 'solo', 'duo', or 'squad', after 'create' to select which mode to create the team for.
-	If entering as a solo no team name is required.
-	For duo and squad, add your team name like this: "cool team",
-	and ping your team mates to add them to the team.
+	If entering as a solo no team name is required. For duo and squad,
+	add your team name like this: "cool team", and ping your team mates to add them to the team.
 	"""
 	if mode == "solo":
 		with open('solo_leaderboard.json', 'r+') as solo_json:
