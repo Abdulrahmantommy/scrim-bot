@@ -419,17 +419,58 @@ async def score(ctx, kills, placement, gamecode):
 
 @bot.group(invoke_without_command=True)
 async def team(ctx, mode, teamname = None, *users):
-	"""
-	Use '/help team' for info on how to use this command.
-	"""
+	"""Use '/help team' for info on how to use this command."""
 	pass
 
 @team.command(name="delete")
 async def team_delete(ctx):
 	""" - Delete your team. Use '/help team delete' for more info.
-	Coming soon :)
+	Just use '/team delete' to delete your team. You have to be the team owner.
 	"""
-	pass
+	with open('solo_leaderboard.json', 'r+') as solo_json:
+		soloData = json.load(solo_json)
+
+		for team in soloData['scores']:
+			if team['userId'] == ctx.author.id:
+				soloData['scores'].remove(team)
+				await ctx.send(f"Deleted <@{ctx.author.id}>'s solo team")
+				logger.info(f'Deleted solo team as - {ctx.author.id}')
+
+				solo_json.seek(0)
+				json.dump(soloData, solo_json, indent=4, sort_keys=True, separators=(',', ': '))
+				solo_json.truncate()
+				return
+
+	with open('duo_leaderboard.json', 'r+') as duo_json:
+		duoData = json.load(duo_json)
+
+		for team in duoData['scores']:
+			if team['owner'] == ctx.author.id:
+				duoData['scores'].remove(team)
+				await ctx.send(f"Deleted <@{ctx.author.id}>'s duo team")
+				logger.info(f'Deleted duo team as - {ctx.author.id}')
+
+				duo_json.seek(0)
+				json.dump(duoData, duo_json, indent=4, sort_keys=True, separators=(',', ': '))
+				duo_json.truncate()
+				return
+
+	with open('squad_leaderboard.json', 'r+') as squad_json:
+		squadData = json.load(squad_json)
+
+		for team in squadData['scores']:
+			if team['owner'] == ctx.author.id:
+				squadData['scores'].remove(team)
+				await ctx.send(f"Deleted <@{ctx.author.id}>'s squad team")
+				logger.info(f'Deleted squad team as - {ctx.author.id}')
+
+				squad_json.seek(0)
+				json.dump(squadData, squad_json, indent=4, sort_keys=True, separators=(',', ': '))
+				squad_json.truncate()
+				return
+
+	await ctx.send(f"No team to delete, <@{ctx.author.id}>")
+	return
 
 @team.command(name="leave")
 async def team_leave(ctx):
