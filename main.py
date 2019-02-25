@@ -480,7 +480,57 @@ async def team_leave(ctx, mode):
 	""" - Leave your team. Use '/help team leave' for more info.
 	Just use '/team leave <mode>' to leave your team. You can't leave the team if you're the team owner.
 	"""
-	pass
+	if mode == "solo":
+		await ctx.send(f"You cannot leave your solo team. You can delete it however with `/team delete solo`")
+		return
+
+	if mode == "duo":
+		with open('duo_leaderboard.json', 'r+') as duo_json:
+			duoData = json.load(duo_json)
+
+			for team in duoData['scores']:
+				if ctx.author.id in team['memberIds'] and team['owner'] != ctx.author.id:
+					team['memberIds'].remove(ctx.author.id)
+
+					try:
+						team['memberNames'].remove(f"{ctx.author.name}#{ctx.author.discriminator}")
+					except:
+						await ctx.send(f"Your name does not match the name associated with this team, please contact <@{239000912733929482}> to resolve the issue.")
+						logger.info(f"{ctx.author.id} - member name mismatch")
+
+					duo_json.seek(0)
+					json.dump(duoData, duo_json, indent=4, sort_keys=True, separators=(',', ': '))
+					duo_json.truncate()
+
+					await ctx.send(f"<@{ctx.author.id}>, you have left your team, \"{team['teamname']}\"")
+					logger.info(f"{ctx.author.id} - has left their team: \"{team['teamname']}\"")
+					return
+
+			await ctx.send(f"You cannot leave this team. You are either not a part of this team, or are the team owner, in which case you can delete your team using `/team delete duo`")
+
+	if mode == "squad":
+		with open('squad_leaderboard.json', 'r+') as squad_json:
+			squadData = json.load(squad_json)
+
+			for team in squadData['scores']:
+				if ctx.author.id in team['memberIds'] and team['owner'] != ctx.author.id:
+					team['memberIds'].remove(ctx.author.id)
+
+					try:
+						team['memberNames'].remove(f"{ctx.author.name}#{ctx.author.discriminator}")
+					except:
+						await ctx.send(f"Your name does not match the name associated with this team, please contact <@{239000912733929482}> to resolve the issue.")
+						logger.info(f"{ctx.author.id} - member name mismatch")
+
+					squad_json.seek(0)
+					json.dump(squadData, squad_json, indent=4, sort_keys=True, separators=(',', ': '))
+					squad_json.truncate()
+
+					await ctx.send(f"<@{ctx.author.id}>, you have left your team, \"{team['teamname']}\"")
+					logger.info(f"{ctx.author.id} - has left their team: \"{team['teamname']}\"")
+					return
+
+			await ctx.send(f"You cannot leave this team. You are either not a part of this team, or are the team owner, in which case you can delete your team using `/team delete squad`")
 
 @team.command(name="invite")
 async def team_invite(ctx, mode, *users):
